@@ -24,7 +24,7 @@
                 <li><a href="{{ route('site.courses') }}" class="{{ $catName == 'courses' ? 'active' : '' }}">Cursos</a>
                 </li>
                 <li><a href="{{ route('site.instructors') }}"
-                        class="{{ $catName == 'instructors' ? 'active' : '' }}">Professores</a></li>
+                        {{-- class="{{ $catName == 'instructors' ? 'active' : '' }}">Professores</a></li> --}}
                 {{-- <li><a href="{{ route('site.pricing') }}" class="{{ $catName == 'pricing' ? 'active' : '' }}">Inscrições</a></li> --}}
                 <li><a href="{{ route('site.blog') }}" class="{{ $catName == 'blog' ? 'active' : '' }}">Notícias</a>
                 </li>
