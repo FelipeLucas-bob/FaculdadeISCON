@@ -19,4 +19,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp                    # ou ftps se o servidor suportar
-          port: 21                         # porta do FTP
+          port: 22                         # porta do FTP
