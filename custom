@@ -1,0 +1,13 @@
+<?php
+
+return [
+    'api_token' => env('API_TOKEN', 'default_token'),
+    'max_users' => 100,
+    'nome_do_projeto' => 'ISCON',
+
+    // imagens estáticas
+    'logo_piloto'           => asset('images/logo/logo-piloto.png'),
+    'logo_transparent'      => asset('images/logo/logo.png'),
+    'logo_name_transparent' => asset('images/logo/logo-name-transparent.png'),
+    'logo_icon_transparent' => asset('images/logo/logo-icon-transparent.png'),
+];

@@ -1,0 +1,22 @@
+on: 
+  push:
+    branches:
+      - main
+
+name: 🚀 Deploy build para o servidor
+
+jobs:
+  web-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛒 Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: dev.iscon.edu.br         # apenas o hostname
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp                    # ou ftps se o servidor suportar
+          port: 21                         # porta do FTP
