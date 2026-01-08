@@ -16,7 +16,7 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: dev.iscon.edu.br         # apenas o hostname
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+          username: user_ftp@dev.iscon.edu.br
+          password: user_ftp@pass
           protocol: ftp                    # ou ftps se o servidor suportar
           port: 21                         # porta do FTP
