@@ -37,8 +37,6 @@
                                 class="{{ $catName == 'terms' ? 'active' : '' }}">Termos</a></li>
                         <li><a href="{{ route('site.privacy') }}"
                                 class="{{ $catName == 'privacy' ? 'active' : '' }}">Privacidade</a></li>
-                        {{-- <li><a href="{{ route('site.privacy') }}"
-                                class="{{ $catName == 'privacy' ? 'active' : '' }}">Revista</a></li> --}}
                     </ul>
                 </li>
                 <li><a href="{{ route('site.contacts') }}"
