@@ -13,13 +13,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy via SSH (rsync)
+      - name: Deploy via SSH
         uses: easingthemes/ssh-deploy@v4.1.10
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          remote-user: iscondev        # ← usuário principal do cPanel
-          server-ip: 162.240.156.222
-          port: 22022
-          remote-path: /home/iscondev/public_html/
-          local-path: ./
-          rsync-options: "--delete"
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: 162.240.156.222
+          REMOTE_USER: iscondev
+          REMOTE_PORT: 22022
+          SOURCE: ./
+          TARGET: /home/iscondev/public_html/
+          ARGS: "-rlgoDzvc --delete"
