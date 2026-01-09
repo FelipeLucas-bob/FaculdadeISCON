@@ -1,22 +1,25 @@
-on: 
+name: Deploy via SSH
+
+on:
   push:
     branches:
       - main
 
-name: 🚀 Deploy build para o servidor
-
 jobs:
-  web-deploy:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: 🛒 Checkout
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Deploy via SSH (rsync)
+        uses: easingthemes/ssh-deploy@v4.1.10
         with:
-          server: dev.iscon.edu.br         # apenas o hostname
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftp                    # ou ftps se o servidor suportar
-          port: 21                         # porta do FTP
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          remote-user: iscondev        # ← usuário principal do cPanel
+          server-ip: 162.240.156.222
+          port: 22022
+          remote-path: /home/iscondev/public_html/
+          local-path: ./
+          rsync-options: "--delete"
