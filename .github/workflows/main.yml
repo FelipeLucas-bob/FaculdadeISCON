@@ -8,16 +8,17 @@ name: 🚀 Deploy build para o servidor
 jobs:
   web-deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: 🛒 Checkout
-        uses: actions/checkout@v4
 
-      - name: Deploy via FTP
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 🚀 Deploy via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: dev.iscon.edu.br         # apenas o hostname
+          server: dev.iscon.edu.br
           username: user_ftp@dev.iscon.edu.br
           password: user_ftp@pass
-          protocol: ftp                    # ou ftps se o servidor suportar
-          port: 21                         # porta do FTP
-          server-dir: /public_html/
+          protocol: ftps
+          port: 21
+          server-dir: ./
+          dangerous-clean-slate: false
