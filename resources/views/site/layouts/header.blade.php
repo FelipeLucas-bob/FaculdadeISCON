@@ -16,20 +16,14 @@
 
         <nav id="navmenu" class="navmenu">
             <ul>
-                <li><a href="{{ route('site.index') }}" class="{{ $catName == 'index' ? 'active' : '' }}">Início</a>
-                </li>
+                <li><a href="{{ route('site.index') }}" class="{{ $catName == 'index' ? 'active' : '' }}">Início</a></li>
                 <li><a href="{{ route('site.about') }}" class="{{ $catName == 'about' ? 'active' : '' }}">Sobre</a></li>
-                <li><a href="{{ route('site.enroll') }}" class="{{ $catName == 'enroll' ? 'active' : '' }}">Processo
-                        Seletivo</a></li>
-                <li><a href="{{ route('site.courses') }}" class="{{ $catName == 'courses' ? 'active' : '' }}">Cursos</a>
-                </li>
-                <li><a href="{{ route('site.instructors') }}"
-                        {{-- class="{{ $catName == 'instructors' ? 'active' : '' }}">Professores</a></li> --}}
+                <li><a href="{{ route('site.enroll') }}" class="{{ $catName == 'enroll' ? 'active' : '' }}">Processo Seletivo</a></li>
+                <li><a href="{{ route('site.courses') }}" class="{{ $catName == 'courses' ? 'active' : '' }}">Cursos</a></li>
+                {{-- <li><a href="{{ route('site.instructors') }}" class="{{ $catName == 'instructors' ? 'active' : '' }}">Professores</a></li> --}}
+                {{-- <li><a href="{{ route('site.blog') }}" class="{{ $catName == 'blog' ? 'active' : '' }}">Notícias</a></li> --}}
+                {{-- <li><a href="{{ route('site.events') }}" class="{{ $catName == 'events' ? 'active' : '' }}">Eventos</a></li> --}}
                 {{-- <li><a href="{{ route('site.pricing') }}" class="{{ $catName == 'pricing' ? 'active' : '' }}">Inscrições</a></li> --}}
-                <li><a href="{{ route('site.blog') }}" class="{{ $catName == 'blog' ? 'active' : '' }}">Notícias</a>
-                </li>
-                <li><a href="{{ route('site.events') }}"
-                        class="{{ $catName == 'events' ? 'active' : '' }}">Eventos</a></li>
                 <li class="dropdown">
                     <a href="#"><span>Mais</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
@@ -41,8 +35,7 @@
                                 class="{{ $catName == 'privacy' ? 'active' : '' }}">Revista</a></li>
                     </ul>
                 </li>
-                <li><a href="{{ route('site.contacts') }}"
-                        class="{{ $catName == 'contacts' ? 'active' : '' }}">Contatos</a></li>
+                <li><a href="{{ route('site.contacts') }}" class="{{ $catName == 'contacts' ? 'active' : '' }}">Contatos</a></li>
             </ul>
 
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
