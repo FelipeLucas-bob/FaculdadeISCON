@@ -1,25 +1,22 @@
-name: Deploy via SSH
-
-on:
+on: 
   push:
     branches:
       - main
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+name: 🚀 Deploy build para o servidor
 
+jobs:
+  web-deploy:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: 🛒 Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy via SSH
-        uses: easingthemes/ssh-deploy@v4.1.10
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: 162.240.156.222
-          REMOTE_USER: iscondev
-          REMOTE_PORT: 22022
-          SOURCE: ./
-          TARGET: /home/iscondev/public_html/
-          ARGS: "-rlgoDzvc --delete"
+          server: dev.iscon.edu.br         # apenas o hostname
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp                    # ou ftps se o servidor suportar
+          port: 21                         # porta do FTP
