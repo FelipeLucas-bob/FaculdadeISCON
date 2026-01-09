@@ -44,14 +44,14 @@ Route::prefix('/')->group(function () {
     Route::get('/cursos', [App\Http\Controllers\Site\SiteController::class, 'courses'])->name('site.courses');
     Route::get('/curso', [App\Http\Controllers\Site\SiteController::class, 'courseDetails'])->name('site.course.details');
 
-    Route::get('/professores', [App\Http\Controllers\Site\SiteController::class, 'instructors'])->name('site.instructors');
-    Route::get('/professor', [App\Http\Controllers\Site\SiteController::class, 'instructorDetails'])->name('site.instructor.details');
+    //Route::get('/professores', [App\Http\Controllers\Site\SiteController::class, 'instructors'])->name('site.instructors');
+    //Route::get('/professor', [App\Http\Controllers\Site\SiteController::class, 'instructorDetails'])->name('site.instructor.details');
 
-    Route::get('/noticias', [App\Http\Controllers\Site\SiteController::class, 'blog'])->name('site.blog');
-    Route::get('/noticia', [App\Http\Controllers\Site\SiteController::class, 'blogDetails'])->name('site.blog.details');
+    //Route::get('/noticias', [App\Http\Controllers\Site\SiteController::class, 'blog'])->name('site.blog');
+    //Route::get('/noticia', [App\Http\Controllers\Site\SiteController::class, 'blogDetails'])->name('site.blog.details');
 
-    Route::get('/eventos', [App\Http\Controllers\Site\SiteController::class, 'events'])->name('site.events');
-    Route::get('/evento', [App\Http\Controllers\Site\SiteController::class, 'eventDetails'])->name('site.event.details');
+    //Route::get('/eventos', [App\Http\Controllers\Site\SiteController::class, 'events'])->name('site.events');
+    //Route::get('/evento', [App\Http\Controllers\Site\SiteController::class, 'eventDetails'])->name('site.event.details');
 
     Route::get('/termos', [App\Http\Controllers\Site\SiteController::class, 'terms'])->name('site.terms');
     Route::get('/privacidade', [App\Http\Controllers\Site\SiteController::class, 'privacy'])->name('site.privacy');
