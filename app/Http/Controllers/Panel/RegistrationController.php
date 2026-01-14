@@ -8,6 +8,7 @@ use App\Models\RegistrationModel;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\ModuleService;
+use App\Services\ProofService;
 use App\Services\RegistrationService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,7 @@ class RegistrationController extends Controller
     public function __construct(
             protected RegistrationService $registrationService, 
             protected ModuleService $moduleService,
+            protected ProofService $proofService,
             protected UserService $service)
     {
     }
@@ -102,6 +104,8 @@ class RegistrationController extends Controller
 
         $user = $this->registrationService->createCandidate($registrationData);
 
+        $this->proofService->startProof(10);
+
         return redirect()->route('users.index')->with('success', 'Inscrição realizada com sucesso!');
 
     }
@@ -138,52 +142,4 @@ class RegistrationController extends Controller
         //
     }
 
-    public function proof()
-    {
-        $proof = $this->registrationService->startProof();
-
-        $questions = QuestionModel::leftJoin('answers', 'questions.id', '=', 'answers.question_id')
-            ->select('questions.*', 'answers.answer as user_answer')
-            ->whereNull('answers.question_id') // só pega questões sem resposta
-            ->get();
-
-
-        return view(
-            'admin.registration.proof',
-            [
-                'catName' => 'registration',
-                'title' => 'Prova',
-                "breadcrumbs" => ["Processo Seletivo", "Prova"],
-                'scrollspy' => 0,
-                'simplePage' => 0,
-                'proof' => $proof,
-                'questions' => $questions,
-            ]
-        );
-    }
-
-
-    public function start(Request $request)
-    {
-        $this->registrationService->startProof();
-
-        return redirect()->route('registrations.proof')->with('success', 'Prova iniciada com sucesso!');
-
-    }
-
-    public function answers(Request $request)
-    {
-
-        $answers = [
-            'question_id' => $request->question_id,
-            'answer' => $request->answer,
-        ];
-
-        try {
-            $registration = $this->registrationService->setAnswers($answers);
-            return response()->json(['success' => true, 'message' => 'Resposta salvas com sucesso!', 'registration' => $registration]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Erro ao salvar respostas: ' . $e->getMessage()], 500);
-        }
-    }
 }

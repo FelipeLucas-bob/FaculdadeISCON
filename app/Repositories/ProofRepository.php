@@ -8,7 +8,7 @@ use App\Models\RegistrationModel;
 use Collator;
 use Illuminate\Database\Eloquent\Collection;
 
-class RegistrationRepository
+class ProofRepository
 {
     /**
      * Get all registrations.
@@ -63,15 +63,12 @@ class RegistrationRepository
         return $answer;
     }
 
-    public function selectProofUser(int $userId): ?RegistrationModel
+
+    public function selectProofUser(int $userId): Collection
     {
-        return RegistrationModel::where('user_id', $userId)->first();
+        return ProofModel::where('user_id', $userId)->get();
     }
 
-    public function selectRegistrationUser(int $userId): Collection
-    {
-        return RegistrationModel::where('user_id', $userId)->get();
-    }
 
 
 }
