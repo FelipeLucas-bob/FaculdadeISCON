@@ -33,8 +33,8 @@
         <h4>Serviços</h4>
         <ul>
           <li><a href="{{ route('site.courses') }}">Cursos</a></li>
-          <li><a href="{{ route('site.blog') }}">Notícias</a></li>
-          <li><a href="{{ route('site.events') }}">Eventos</a></li>
+          {{-- <li><a href="{{ route('site.blog') }}">Notícias</a></li> --}}
+          {{-- <li><a href="{{ route('site.events') }}">Eventos</a></li> --}}
           {{-- <li><a href="estagio.html">Estágios</a></li> --}}
         </ul>
       </div>

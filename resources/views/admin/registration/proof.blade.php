@@ -38,7 +38,7 @@
                     {{-- Visão da Prova com a Primeira Questão --}}
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">Processo Seletivo 2025.2</h5>
+                            <h5 class="mb-0">Processo Seletivo 2026.1</h5>
                         </div>
                         <div class="card-body">
                             <form method="POST" action="{{ route('registrations.answers') }}" class="ajax-answer-form">
