@@ -66,7 +66,7 @@
 
         <a class="btn-getstarted" href="{{ route('login') }}">
             <i class="bi bi-box-arrow-in-right"></i>
-            Portal <b>ISCON</b>
+            <b>Acessar</b>
         </a>
 
     </div>
