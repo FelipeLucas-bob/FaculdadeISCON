@@ -206,7 +206,7 @@ Route::middleware(['auth', 'check.access'])->group(function () {
 
     Route::prefix('painel')->group(function () {
         Route::get('/processo-seletivo', [App\Http\Controllers\Panel\RegistrationController::class, 'index'])->name('registrations.index');
-        Route::post('/prova', [App\Http\Controllers\Panel\RegistrationController::class, 'proof'])->name('registrations.proof');
+        Route::post('/prova', [App\Http\Controllers\Panel\ProofController::class, 'proof'])->name('proof.proof');
         Route::post('/resposta', [App\Http\Controllers\Panel\RegistrationController::class, 'answers'])->name('registrations.answers');
     });
 

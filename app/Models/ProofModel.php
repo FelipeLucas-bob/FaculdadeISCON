@@ -9,6 +9,6 @@ class ProofModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'proof';
+    protected $table = 'proofs';
 
 }

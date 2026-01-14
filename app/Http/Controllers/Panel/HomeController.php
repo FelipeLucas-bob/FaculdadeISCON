@@ -7,10 +7,12 @@ use App\Services\CourseService;
 use App\Services\DisciplineService;
 use App\Services\InstructorService;
 use App\Services\LibraryService;
+use App\Services\ProofService;
 use App\Services\RegistrationService;
 use App\Services\StudentService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -23,7 +25,8 @@ class HomeController extends Controller
         protected InstructorService $instructorService,
         protected CourseService $courseService,
         protected LibraryService $libraryService,
-        protected DisciplineService $disciplineService
+        protected DisciplineService $disciplineService,
+        protected ProofService $proofService
     ) {}
 
 
@@ -53,6 +56,12 @@ class HomeController extends Controller
         $returnsQtdToday = $this->libraryService->getReturnsTodayCount();
         $returnsToday = $this->libraryService->getReturnsToday();
 
+        // Processo Seletivo
+        $user_id = Auth::user()->id;
+        $proofs = $this->proofService->selectProofUser($user_id);
+
+        $registrations = $this->registrationService->selectRegistrationUser($user_id);
+
         return view(
             'admin/home/home',
             [
@@ -75,6 +84,9 @@ class HomeController extends Controller
                 'returnsQtdToday' => $returnsQtdToday,
                 'booksQtd' => $booksQtd,
                 'booksItemsQtd' => $booksItemsQtd,
+                'teste' => 'teste',
+                'proofs' => $proofs,
+                'registrations' => $registrations,
             ]
         );
     }

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->dateTime('end')->nullable();
             $table->enum('status', ['in_progress', 'finished'])->default('in_progress');
             $table->integer('total_questions')->default(10);
+            $table->string('hash');
+            $table->unsignedBigInteger('registration_id');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

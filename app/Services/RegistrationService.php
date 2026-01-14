@@ -64,4 +64,13 @@ Class RegistrationService
         return $this->registrationRepository->saveAnswer($answer);
     }
 
+
+    public function selectRegistrationUser($user_id)
+    {
+        return $this->registrationRepository->selectRegistrationUser($user_id);
+    }
+
+
+
+
 }
