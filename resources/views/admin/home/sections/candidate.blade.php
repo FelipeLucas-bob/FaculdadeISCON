@@ -1,3 +1,37 @@
+@if($passwordUpdate == 0)
+<div class="col-12 mt-4">
+    <div class="alert alert-arrow-right alert-icon-right alert-light-info alert-dismissible fade show d-flex align-items-start"
+        role="alert">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="feather feather-lock-check">
+
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            <polyline points="9 16 11 18 15 14"></polyline>
+        </svg>
+
+
+        <div>
+            <strong>Atenção!</strong>
+            Identificamos que este é o seu primeiro acesso ao sistema.<br><br>
+
+
+            Por motivos de segurança, faça a <strong>alteração da sua senha</strong>
+            antes de continuar utilizando a plataforma.<br><br>
+
+
+
+            <a href="{{ route('profile.edit.alterar-senha', Auth::user()->id) }}" class="btn btn-info btn-sm">
+                <i class="bi bi-key-fill me-1"></i>
+                Alterar senha agora
+            </a>
+
+        </div>
+    </div>
+</div>
+@endif
+
 <!-- CANDIDATOS -->
 <div class="col-12 mt-4">
     <div class="alert alert-arrow-right alert-icon-right alert-light-primary alert-dismissible fade show d-flex align-items-center"
@@ -57,7 +91,8 @@
 
                                         <form action="{{ route('proof.proof') }}" method="POST" class="text-center">
                                             @csrf
-                                            <input type="hidden" name="registration_id" value="{{ $registration->id }}" class="form-control">
+                                            <input type="hidden" name="registration_id" value="{{ $registration->id }}"
+                                                class="form-control">
                                             <button type="submit"
                                                 class="btn btn-primary px-4 py-2 rounded-pill shadow-sm">
                                                 <i class="bi bi-play-fill me-1"></i> Iniciar Prova

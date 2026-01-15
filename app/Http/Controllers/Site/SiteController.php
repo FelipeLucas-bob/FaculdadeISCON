@@ -296,7 +296,7 @@ class SiteController extends Controller
 
             $user = $this->registrationService->createCandidate($registrationData);
 
-            return redirect()->route('site.enroll')->with('success', 'Inscrição realizada com sucesso!');
+            return redirect()->route('panel.sign_in')->with('success', 'Inscrição realizada com sucesso!');
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->errorInfo[1] == 1062) { // Duplicate entry error code for MySQL
                 return redirect()->route('site.enroll')->with('error', 'O e-mail informado já está cadastrado.');

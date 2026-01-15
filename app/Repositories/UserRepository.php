@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\PasswordUpdateModel;
 use App\Models\User;
 use App\Models\UserAddressModel;
 use App\Models\UserContactsModel;
@@ -144,4 +145,16 @@ class UserRepository
 
         return 'USR' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
     }
+
+        public function passwordUpdate(PasswordUpdateModel $registration)
+    {
+        $registration->save();
+        return $registration;
+    }
+
+    public function selectUserPasswordUpadate($user_id)
+    {
+        return PasswordUpdateModel::where('user_id', $user_id);
+    }
+
 }

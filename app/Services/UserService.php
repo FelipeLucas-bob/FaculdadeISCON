@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\ValidationException;
 use App\Http\Controllers\Panel\UserController;
 use App\Http\Requests\UserPutUpdatePassword;
+use App\Models\PasswordUpdateModel;
 use App\Models\User;
 use App\Models\UserAddressModel;
 use App\Models\UserContactsModel;
@@ -152,17 +153,17 @@ class UserService
             );
         }
 
-        if(!password_verify($oldPassord, $userFromId->password)) {
-            throw new ValidationException(
-                'A senha está incorreta',
-                'warning',
-                $rotaFinal,
-                $request->getCleanData(),
-                [
-                    'old-password' => ['Senha incorreta'],
-                ]
-            );
-        }
+        // if(!password_verify($oldPassord, $userFromId->password)) {
+        //     throw new ValidationException(
+        //         'A senha está incorreta',
+        //         'warning',
+        //         $rotaFinal,
+        //         $request->getCleanData(),
+        //         [
+        //             'old-password' => ['Senha incorreta'],
+        //         ]
+        //     );
+        // }
 
         if($oldPassord == $newPassord) {
             throw new ValidationException(
@@ -360,4 +361,18 @@ class UserService
         return Auth::user()->id;
     }
 
+    public function passwordUpdate()
+    {
+
+        $info = new PasswordUpdateModel();
+        $info->user_id = Auth::user()->id;
+        $info->update = true;
+
+        return $this->userRepository->passwordUpdate($info);
+    }
+
+    public function selectUserPasswordUpadate()
+    {
+        return $this->userRepository->selectUserPasswordUpadate(Auth::user()->id);
+    }
 }
