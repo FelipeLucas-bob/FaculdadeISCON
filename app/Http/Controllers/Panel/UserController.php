@@ -268,6 +268,8 @@ class UserController extends Controller
                 $request
             );
 
+        $updatePassword = $this->service->passwordUpdate();
+
         return redirect()
             ->to(route('logout.get'));
     }

@@ -62,6 +62,8 @@ class HomeController extends Controller
 
         $registrations = $this->registrationService->selectRegistrationUser($user_id);
 
+        $passwordUpdate = $this->userService->selectUserPasswordUpadate()->count();
+
         return view(
             'admin/home/home',
             [
@@ -87,6 +89,7 @@ class HomeController extends Controller
                 'teste' => 'teste',
                 'proofs' => $proofs,
                 'registrations' => $registrations,
+                'passwordUpdate'=> $passwordUpdate,
             ]
         );
     }

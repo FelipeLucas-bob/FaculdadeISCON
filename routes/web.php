@@ -23,7 +23,7 @@ Route::get('/logout/get', [App\Http\Controllers\Panel\UserController::class, 'lo
 
 
 /**
- * =======================
+ * =======================login
  *    ROTAS PÚBLICAS
  * =======================
  */

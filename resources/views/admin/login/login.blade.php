@@ -15,6 +15,18 @@
             <div class="row">
 
                 <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-8 col-12 d-flex flex-column align-self-center mx-auto">
+
+                    @if (session('success'))
+                    <div class="alert alert-success text-center h6">
+                        <b class="text-center">
+                            <i class="bi bi-check-circle-fill"></i> Inscrição Realizada com sucesso! <br/>
+                        </b> 
+                        <div class="mt-4">Favor, realize o acesso com <br/><br/>
+                            Usuário: <b>Email</b><br/>
+                            Senha: <b>CPF</b></div>                           
+                    </div>
+                    @endif
+
                     <div class="card mt-3 mb-3" style="background-color: #ffffff;">
                         <div class="card-body">
                             <form action="{{ route('login.store') }}" method="POST">
@@ -25,7 +37,7 @@
                                             <h2>
                                                 @if (app()->environment('production'))
                                                     {{-- Produção: busca arquivos compilados pelo Vite --}}
-                                                     <img src="{{ asset('images/logo/logo.png') }}" alt="Logo">
+                                                    <img src="{{ asset('images/logo/logo.png') }}" alt="Logo">
                                                 @else
                                                     {{-- Desenvolvimento: rodando npm run dev --}}
                                                     <img src="{{ Vite::asset('resources/images/logo/logo.png') }}"
@@ -33,7 +45,7 @@
                                                 @endif
 
                                             </h2>
-                                            <p class="mt-2 mb-5 text-primary fw-bold h6">Digite seu e-mail e senha para
+                                            <p class="mt-2 mb-5 text-primary fw-bold h6">Digite seu usuário e senha para
                                                 acessar o Portal</p>
                                         </a>
                                     </div>
@@ -51,7 +63,7 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold text-primary">Email</label>
+                                            <label class="form-label fw-bold text-primary">Usuário</label>
                                             <input type="email" name="email" class="form-control"
                                                 placeholder="Exemplo@email.com.br" value="{{ old('email') }}" required>
                                         </div>
