@@ -154,35 +154,34 @@ class ProofController extends Controller
     }
 
 
-    public function show($registrationId)
-    {
-        $proof = ProofModel::where('registration_id', $registrationId)
-            ->where('status', 'in_progress')
-            ->firstOrFail();
+public function show($registrationId)
+{
+    $proof = ProofModel::where('registration_id', $registrationId)
+        ->where('status', 'in_progress')
+        ->firstOrFail();
 
+    $questions = QuestionModel::join('answers', 'questions.id', '=', 'answers.question_id')
+        ->select(
+            'questions.*',
+            'answers.answer as user_answer'
+        )
+        ->where('answers.proof_id', $proof->id)
+        ->orderBy('questions.id', 'asc') // garante ordem crescente
+        ->get();
 
-        $questions = QuestionModel::join('answers', 'questions.id', '=', 'answers.question_id')
-            ->select(
-                'questions.*',
-                'answers.answer as user_answer'
-            )
-            ->where('answers.proof_id', $proof->id)
-            ->get();
+    return view('admin.registration.proof', [
+        'catName' => 'registration',
+        'title' => 'Prova',
+        "breadcrumbs" => ["Processo Seletivo", "Prova"],
+        'scrollspy' => 0,
+        'simplePage' => 0,
+        'proof' => $proof,
+        'questions' => $questions,
+        'startTime' => $proof->start,         // hora de início real da prova
+        'durationMinutes' => 60,              // ou pegar do banco se a duração for variável
+    ]);
+}
 
-        return view(
-            'admin.registration.proof',
-            [
-                'catName' => 'registration',
-                'title' => 'Prova',
-                "breadcrumbs" => ["Processo Seletivo", "Prova"],
-                'scrollspy' => 0,
-                'simplePage' => 0,
-                'proof' => $proof,
-                'questions' => $questions,
-                // 'start' => $proof_user_id->start
-            ]
-        );
-    }
 
 
     public function finish(ProofModel $proof)

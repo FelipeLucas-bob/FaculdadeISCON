@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('author_id');
             $table->unsignedBigInteger('user_id');
-            $table->string('phone');            
+            $table->string('phone');
+            $table->string('telephone');
+            $table->string('whatsapp');
             $table->string('course');
             $table->string('education');
-            $table->string('experience');
+            $table->string('shift');
             $table->string('motivation');
             $table->string('admission_type');
             $table->boolean('terms');

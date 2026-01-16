@@ -154,13 +154,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($proofs as $proof)
+                            @forelse ($proofs as $proof)
                                 <tr>
                                     <td>{{ $proof->hash }}</td>
                                     <td>{{ Date('d/m/Y H:i:s', strtotime($proof->created_at)) }}</td>
-                                    <td>{{ Date('d/m/Y H:i:s', strtotime($proof->updated_at)) }}</td>
                                     <td>
-                                        {{ gmdate('H:i:s', strtotime($proof->updated_at) - strtotime($proof->created_at)) }}
+                                        @if ($proof->created_at != $proof->updated_at)
+                                            {{ Date('d/m/Y H:i:s', strtotime($proof->updated_at)) }}
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td>{{ gmdate('H:i:s', strtotime($proof->updated_at) - strtotime($proof->created_at)) }}
                                     </td>
                                     <td>
                                         @if ($proof->status === 'in_progress')
@@ -173,20 +178,21 @@
                                             <span class="badge bg-secondary rounded-pill">Desconhecido</span>
                                         @endif
                                     </td>
-
                                     <td>
-                                        <!-- Visualizar Contrato -->
                                         <a href="{{ route('documents.contract.user') }}"
                                             class="btn btn-sm btn-outline-info rounded-pill me-1" title="Visualizar"
                                             target="_blank">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </td>
-
                                 </tr>
-                            @endforeach
-
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">Nenhuma prova encontrada.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
+
                     </table>
                 </div>
 

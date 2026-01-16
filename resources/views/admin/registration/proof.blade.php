@@ -36,13 +36,53 @@
         <div class="row layout-spacing">
             <div class="col-lg-12">
                 {{-- Visão da Prova com a Primeira Questão --}}
+                <div class="card border-primary mb-4">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <div><i class="bi bi-info-circle me-2"></i> Informações da Prova</div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled ps-2 mb-0">
+                            <li class="mb-2" style="font-size: 1rem;">
+                                <i class="bi bi-clock-history text-primary me-2"></i>
+                                <strong class="text-primary">Duração:</strong> A prova terá 60 minutos. O tempo começou assim que você clicou em "Iniciar Prova".
+                            </li>
+                            <li class="mb-2" style="font-size: 1rem;">
+                                <i class="bi bi-list-ol text-primary me-2"></i>
+                                <strong class="text-primary">Quantidade de questões:</strong> Serão 10 questões de múltipla
+                                escolha.
+                            </li>
+                            <li class="mb-2" style="font-size: 1rem;">
+                                <i class="bi bi-info-circle text-primary me-2"></i>
+                                <strong class="text-primary">Respostas:</strong> Leia cada questão com atenção antes de
+                                marcar sua resposta. Você só poderá enviar a prova uma vez.
+                            </li>
+                            <li class="mb-2" style="font-size: 1rem;">
+                                <i class="bi bi-info-circle text-primary me-2"></i>
+                                <strong class="text-primary">Envio automático:</strong> Ao final dos 60 minutos, a prova
+                                será enviada automaticamente, mesmo que você não tenha terminado.
+                            </li>
+                            <li style="font-size: 1rem;">
+                                <i class="bi bi-info-circle text-primary me-2"></i>
+                                <strong class="text-primary">Confirmação:</strong> Após enviar, você verá uma tela de
+                                confirmação indicando que sua prova foi registrada com sucesso.
+                            </li>
+                            <li class="mt-4 text-center h4">
+                                <i class="bi bi-clock-history me-1"></i>
+                                <strong class="text-primary">TEMPO RESTANTE:</strong>
+                                <span id="countdown-timer" style="color: red; font-weight: bold;">60:00</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">Processo Seletivo 2026.1 </h5>
                     </div>
 
+
                     <div class="card-body">
-                        @foreach ($questions as $question)
+                        @foreach ($questions->sortBy('id') as $question)
                             <div class="mb-4 question-block" data-question="{{ $question->id }}">
                                 <label class="form-label fw-bold">
                                     {{ $question->id }} - {{ $question->statement }}
@@ -190,6 +230,44 @@
 @endsection
 
 @section('scripts')
+    {{-- <span id="countdown-timer">--:--</span> --}}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Hora de início da prova do backend
+            var startTime = new Date("{{ $startTime }}").getTime(); // timestamp de início
+            var durationMinutes = {{ $durationMinutes }};
+            var endTime = startTime + durationMinutes * 60 * 1000; // timestamp final
+
+            var countdownElement = document.getElementById('countdown-timer');
+
+            var countdownInterval = setInterval(function() {
+                var now = new Date().getTime();
+                var remaining = endTime - now;
+
+                if (remaining <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.textContent = "00:00";
+                    alert("O tempo da prova acabou! A prova será enviada automaticamente.");
+
+                    // aqui você pode chamar o envio via Ajax
+                    // submitProva();
+                    return;
+                }
+
+                var minutes = Math.floor((remaining / 1000) / 60);
+                var seconds = Math.floor((remaining / 1000) % 60);
+
+                countdownElement.textContent =
+                    String(minutes).padStart(2, '0') + ':' +
+                    String(seconds).padStart(2, '0');
+
+            }, 1000);
+
+        });
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
