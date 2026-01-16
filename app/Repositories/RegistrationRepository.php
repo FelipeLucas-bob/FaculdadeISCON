@@ -70,8 +70,14 @@ class RegistrationRepository
 
     public function selectRegistrationUser(int $userId): Collection
     {
-        return RegistrationModel::where('user_id', $userId)->get();
+        return RegistrationModel::select(
+            'registrations.*',
+            'registrations.id as reg_id',
+            'proofs.id as proof_id',
+            'proofs.status'
+        )
+            ->leftJoin('proofs', 'proofs.registration_id', '=', 'registrations.id')
+            ->where('registrations.user_id', $userId)
+            ->get();
     }
-
-
 }

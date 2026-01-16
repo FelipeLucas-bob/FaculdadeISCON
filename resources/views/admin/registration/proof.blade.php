@@ -12,37 +12,102 @@
 @endsection
 
 @section('content')
-<div class="container mt-5">
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i>
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-        </div>
-    @elseif(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <strong>Erro!</strong>
-            {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-        </div>
-    @endif
+    <div class="container mt-5">
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+        @elseif(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Erro!</strong>
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+        @endif
 
-    <div class="page-header">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold text-primary mb-0">Prova </h3>
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold text-primary mb-0">Prova </h3>
+            </div>
         </div>
-    </div>
-    <div class="row layout-spacing">
-        <div class="col-lg-12">
-                    {{-- Visão da Prova com a Primeira Questão --}}
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5 class="mb-0">Processo Seletivo 2026.1 - </h5>
-                        </div>
-                        <div class="card-body">
+        <div class="row layout-spacing">
+            <div class="col-lg-12">
+                {{-- Visão da Prova com a Primeira Questão --}}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Processo Seletivo 2026.1 </h5>
+                    </div>
+
+                    <div class="card-body">
+                        @foreach ($questions as $question)
+                            <div class="mb-4 question-block" data-question="{{ $question->id }}">
+                                <label class="form-label fw-bold">
+                                    {{ $question->id }} - {{ $question->statement }}
+                                </label>
+
+                                <input type="hidden" class="question-id" value="{{ $question->id }}">
+                                <input type="hidden" class="proof-id" value="{{ $proof->id }}">
+
+                                @foreach (['a', 'b', 'c', 'd', 'e'] as $opt)
+                                    <div class="form-check">
+                                        <input class="form-check-input answer-radio" type="radio"
+                                            name="answer_{{ $question->id }}" value="{{ $opt }}"
+                                            {{ $question->user_answer === $opt ? 'checked' : '' }}>
+
+                                        <label class="form-check-label">
+                                            {{ $question->{'option_' . $opt} }}
+                                        </label>
+                                    </div>
+                                @endforeach
+
+                                <div class="ajax-response mt-2"></div>
+
+
+
+
+                            </div>
+                        @endforeach
+                        <form action="{{ route('proof.finish', $proof->id) }}" method="POST" style="display: none;"
+                            id="finish-proof-form">
+                            @csrf
+                            <button type="submit" class="btn btn-danger mt-3" id="finish-proof-btn">
+                                <i class="bi bi-check2-circle"></i> Finalizar Prova
+                            </button>
+                        </form>
+
+                        <script>
+                            document.getElementById('finish-proof-btn').addEventListener('click', function() {
+                                const proofId = '{{ $proof->id }}';
+
+                                fetch("{{ url('/painel/prova') }}/" + proofId + "/finalizar", {
+                                        method: 'POST',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                            'X-Requested-With': 'XMLHttpRequest'
+                                        }
+                                    })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            alert('Prova finalizada com sucesso!');
+                                            window.location.reload(); // ou redireciona para resultados
+                                        } else {
+                                            alert('Erro ao finalizar a prova.');
+                                        }
+                                    })
+                                    .catch(() => alert('Erro ao finalizar a prova.'));
+                            });
+                        </script>
+
+                    </div>
+
+
+                    {{-- <div class="card-body">
                             <form method="POST" action="{{ route('registrations.answers') }}" class="ajax-answer-form">
-                                @foreach($questions as $question)
+                                @foreach ($questions as $question)
                                 @csrf
                                 <div class="mb-3 mt-4">
                                     <label class="form-label fw-bold">{{ $question->id }} - {{ $question->statement }}</label>
@@ -115,18 +180,82 @@
                                     });
                                 });
                             </script>
-                        </div>
-                    </div>
+                        </div> --}}
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-
+    </div>
+    </div>
 @endsection
 
 @section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const finishForm = document.getElementById('finish-proof-form');
+
+            // Função para verificar se todas as questões estão respondidas
+            function checkAllAnswered() {
+                const allQuestions = document.querySelectorAll('.question-block');
+                for (let block of allQuestions) {
+                    if (!block.querySelector('.answer-radio:checked')) return false;
+                }
+                return true;
+            }
+
+            document.querySelectorAll('.answer-radio').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const block = this.closest('.question-block');
+
+                    const data = {
+                        proof_id: block.querySelector('.proof-id').value,
+                        question_id: block.querySelector('.question-id').value,
+                        answer: this.value
+                    };
+
+                    // AJAX para salvar a resposta
+                    fetch("{{ route('registrations.answers') }}", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then(res => res.json())
+                        .then(res => {
+                            const responseDiv = block.querySelector('.ajax-response');
+
+                            if (res.success) {
+                                responseDiv.innerHTML =
+                                    '<div class="text-success small">Resposta salva</div>';
+                            } else {
+                                responseDiv.innerHTML = '<div class="text-danger small">' + (res
+                                    .message || 'Erro') + '</div>';
+                            }
+
+                            // Mostra botão Finalizar se todas respostas estiverem preenchidas
+                            if (checkAllAnswered()) {
+                                finishForm.style.display = 'block';
+                            } else {
+                                finishForm.style.display = 'none';
+                            }
+                        })
+                        .catch(() => {
+                            block.querySelector('.ajax-response').innerHTML =
+                                '<div class="text-danger small">Erro ao salvar</div>';
+                        });
+                });
+            });
+
+        });
+    </script>
+
+
+
+
     {{-- Scripts Here --}}
     <script type="module" src="{{ asset('plugins/src/global/vendors.min.js') }}"></script>
     @vite(['resources/js/custom.js'])
@@ -134,15 +263,15 @@
 
     <script type="module">
         function multiCheck(tb_var) {
-            tb_var.on("change", ".chk-parent", function () {
-                var e = $(this).closest("table").find("td:first-child .child-chk"),
-                    a = $(this).is(":checked");
-                $(e).each(function () {
-                    a ? ($(this).prop("checked", !0), $(this).closest("tr").addClass("active")) : ($(this)
-                        .prop("checked", !1), $(this).closest("tr").removeClass("active"))
-                })
-            }),
-                tb_var.on("change", "tbody tr .new-control", function () {
+            tb_var.on("change", ".chk-parent", function() {
+                    var e = $(this).closest("table").find("td:first-child .child-chk"),
+                        a = $(this).is(":checked");
+                    $(e).each(function() {
+                        a ? ($(this).prop("checked", !0), $(this).closest("tr").addClass("active")) : ($(this)
+                            .prop("checked", !1), $(this).closest("tr").removeClass("active"))
+                    })
+                }),
+                tb_var.on("change", "tbody tr .new-control", function() {
                     $(this).parents("tr").toggleClass("active")
                 })
         }
@@ -172,7 +301,7 @@
 @endsection
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         function aplicarInputMaskCPF() {
             const cpfField = document.getElementById('cpfCreateUser');
             if (cpfField) {
@@ -185,7 +314,7 @@
         // Aplica novamente ao abrir o modal (útil se o input for recriado)
         const modal = document.getElementById('createUserModal');
         if (modal) {
-            modal.addEventListener('shown.bs.modal', function () {
+            modal.addEventListener('shown.bs.modal', function() {
                 aplicarInputMaskCPF();
             });
         }

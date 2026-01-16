@@ -1,35 +1,35 @@
-@if($passwordUpdate == 0)
-<div class="col-12 mt-4">
-    <div class="alert alert-arrow-right alert-icon-right alert-light-info alert-dismissible fade show d-flex align-items-start"
-        role="alert">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            class="feather feather-lock-check">
+@if ($passwordUpdate == 0)
+    <div class="col-12 mt-4">
+        <div class="alert alert-arrow-right alert-icon-right alert-light-info alert-dismissible fade show d-flex align-items-start"
+            role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-lock-check">
 
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            <polyline points="9 16 11 18 15 14"></polyline>
-        </svg>
-
-
-        <div>
-            <strong>Atenção!</strong>
-            Identificamos que este é o seu primeiro acesso ao sistema.<br><br>
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                <polyline points="9 16 11 18 15 14"></polyline>
+            </svg>
 
 
-            Por motivos de segurança, faça a <strong>alteração da sua senha</strong>
-            antes de continuar utilizando a plataforma.<br><br>
+            <div>
+                <strong>Atenção!</strong>
+                Identificamos que sua senha ainda não foi alterada.<br><br>
+
+
+                Por motivos de segurança, faça a <strong>alteração da sua senha</strong>
+                antes de continuar utilizando a plataforma.<br><br>
 
 
 
-            <a href="{{ route('profile.edit.alterar-senha', Auth::user()->id) }}" class="btn btn-info btn-sm">
-                <i class="bi bi-key-fill me-1"></i>
-                Alterar senha agora
-            </a>
+                <a href="{{ route('profile.edit.alterar-senha', Auth::user()->id) }}" class="btn btn-info btn-sm">
+                    <i class="bi bi-key-fill me-1"></i>
+                    Alterar senha agora
+                </a>
 
+            </div>
         </div>
     </div>
-</div>
 @endif
 
 <!-- CANDIDATOS -->
@@ -83,21 +83,50 @@
                         <tbody>
                             @foreach ($registrations as $registration)
                                 <tr>
-                                    <td>{{ $registration->id }}</td>
+                                    <td>{{ $registration->reg_id }}</td>
                                     <td>{{ $registration->course }}</td>
                                     <td>{{ $registration->admission_type }}</td>
-                                    <td><span class="badge bg-warning rounded-pill">Prova Pendente</span></td>
                                     <td>
+                                        @if ($registration->status == 'in_progress')
+                                            <span class="badge bg-info rounded-pill p-2">Prova em Andamento</span>
+                                        @elseif ($registration->status === 'finished')
+                                            <span class="badge bg-success rounded-pill">Prova Realizada</span>
+                                        @else
+                                            <span class="badge bg-warning rounded-pill">Prova Pendente</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($registration->status === 'finished')
+                                            --
+                                        @else
+                                            <form
+                                                action="{{ $registration->status === 'in_progress' ? route('proof.continue') : route('proof.start') }}"
+                                                method="POST" class="text-center">
 
-                                        <form action="{{ route('proof.proof') }}" method="POST" class="text-center">
-                                            @csrf
-                                            <input type="hidden" name="registration_id" value="{{ $registration->id }}"
-                                                class="form-control">
-                                            <button type="submit"
-                                                class="btn btn-primary px-4 py-2 rounded-pill shadow-sm">
-                                                <i class="bi bi-play-fill me-1"></i> Iniciar Prova
-                                            </button>
-                                        </form>
+                                                @csrf
+
+                                                <input type="hidden" name="registration_id"
+                                                    value="{{ $registration->reg_id }}">
+
+                                                @if ($registration->status === 'in_progress')
+                                                    <a href="{{ route('registrations.proof', $registration->id) }}"
+                                                        class="btn btn-success rounded-pill shadow-sm">
+                                                        <i class="bi bi-arrow-repeat"></i> Continuar Prova
+                                                    </a>
+                                                @else
+                                                    <form action="{{ route('proof.start') }}" method="POST"
+                                                        class="d-inline">
+                                                        @csrf
+                                                        <input type="hidden" name="registration_id"
+                                                            value="{{ $registration->id }}">
+                                                        <button class="btn btn-primary rounded-pill shadow-sm">
+                                                            <i class="bi bi-play-fill"></i> Iniciar Prova
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </form>
+                                        @endif
+
 
                                     </td>
 
@@ -117,9 +146,9 @@
                         <thead class="table-light">
                             <tr>
                                 <th>Prova</th>
-                                <th>Curso</th>
                                 <th>Início</th>
                                 <th>Fim</th>
+                                <th>Duração</th>
                                 <th>Status</th>
                                 <th>Ações</th>
                             </tr>
@@ -127,17 +156,30 @@
                         <tbody>
                             @foreach ($proofs as $proof)
                                 <tr>
-                                    <td> {{ $proof->hash }}</td>
-                                    <td>DIREITO</td>
-                                    <td>12/01/2026 20:52</td>
-                                    <td>12/01/2026 21:30</td>
-                                    <td><span class="badge bg-success rounded-pill">Em andamento</span></td>
+                                    <td>{{ $proof->hash }}</td>
+                                    <td>{{ Date('d/m/Y H:i:s', strtotime($proof->created_at)) }}</td>
+                                    <td>{{ Date('d/m/Y H:i:s', strtotime($proof->updated_at)) }}</td>
+                                    <td>
+                                        {{ gmdate('H:i:s', strtotime($proof->updated_at) - strtotime($proof->created_at)) }}
+                                    </td>
+                                    <td>
+                                        @if ($proof->status === 'in_progress')
+                                            <span class="badge bg-success rounded-pill">Em andamento</span>
+                                        @elseif ($proof->status === 'finished')
+                                            <span class="badge bg-primary rounded-pill">Finalizada</span>
+                                        @elseif ($proof->status === 'pending')
+                                            <span class="badge bg-warning rounded-pill">Pendente</span>
+                                        @else
+                                            <span class="badge bg-secondary rounded-pill">Desconhecido</span>
+                                        @endif
+                                    </td>
+
                                     <td>
                                         <!-- Visualizar Contrato -->
                                         <a href="{{ route('documents.contract.user') }}"
-                                            class="btn btn-sm btn-outline-info rounded-pill me-1"
-                                            title="Continuar Prova" target="_blank">
-                                            <i class="bi bi-play"></i>
+                                            class="btn btn-sm btn-outline-info rounded-pill me-1" title="Visualizar"
+                                            target="_blank">
+                                            <i class="bi bi-eye"></i>
                                         </a>
                                     </td>
 
@@ -164,7 +206,8 @@
                 </div>
             </section>
         </div>
-        <div id="collapseProva" class="collapse" aria-labelledby="headingProva" data-bs-parent="#accordionCandidatos">
+        <div id="collapseProva" class="collapse" aria-labelledby="headingProva"
+            data-bs-parent="#accordionCandidatos">
             <div class="card-body">
                 <ul class="list-unstyled ps-2">
                     <li class="mb-2" style="font-size: 1rem;"><i class="bi bi-clock-history text-primary me-2"></i>
