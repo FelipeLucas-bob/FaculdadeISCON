@@ -293,6 +293,10 @@ Route::middleware(['auth', 'check.access'])->group(function () {
     Route::prefix('painel')->group(function () {
         Route::get('/contrato', [App\Http\Controllers\Panel\DocumentController::class, 'contract'])->name('documents.contract');
         Route::get('/contrato/usuario', [App\Http\Controllers\Panel\DocumentController::class, 'contractUSer'])->name('documents.contract.user');
+
+        Route::post('/documentos/upload', [App\Http\Controllers\Panel\DocumentController::class, 'store'])->name('documentos.upload');
+
+
     });
 
     /**

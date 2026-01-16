@@ -115,4 +115,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(NotificationModel::class, 'user_id');
     }
+
+        public function documents()
+    {
+        return $this->hasMany(UserDocumentModel::class);
+    }
+
 }

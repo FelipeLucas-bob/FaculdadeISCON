@@ -243,6 +243,85 @@
         </div>
     </div>
 
+    <!-- UPLOAD DE DOCUMENTOS -->
+    <div class="card">
+        <div class="card-header" id="headingDocumentos">
+            <section class="mb-0 mt-0">
+                <div class="collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+                    data-bs-target="#collapseDocumentos" aria-expanded="false" aria-controls="collapseDocumentos">
+                    <div class="accordion-icon"><i class="bi bi-folder2-open me-2"></i> Documentos</div>
+                    <div class="icons"><i class="bi bi-chevron-down"></i></div>
+                </div>
+            </section>
+        </div>
+
+        <div id="collapseDocumentos" class="collapse" aria-labelledby="headingDocumentos"
+            data-bs-parent="#accordionCandidatos">
+            <div class="card-body">
+                <h6 class="fw-bold text-primary mb-3">Enviar Documentos</h6>
+
+                <table class="table table-bordered text-center rounded-3 mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Documento</th>
+                            <th>Arquivo</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    @php
+                        $documentos = ['CPF', 'RG', 'Comprovante de Residência', 'Certidão de Nascimento'];
+                        $userDocs = auth()->user()->documents->keyBy('tipo'); // pega os docs do usuário
+                    @endphp
+
+                    <tbody>
+                        @foreach ($documentos as $doc)
+                            @php
+                                $documento = $userDocs[$doc] ?? null;
+                                $status = $documento->status ?? 'Pendente';
+                                $arquivo = $documento->arquivo ?? null;
+                                $link = $arquivo ? asset('storage/documentos/' . $arquivo) : '#';
+                                $botaoLabel = $arquivo ? 'Atualizar' : 'Enviar';
+                            @endphp
+                            <tr id="row-{{ $doc }}">
+                                <td>{{ $doc }}</td>
+                                <td>
+                                    <input type="file" name="documentos[{{ $doc }}]"
+                                        class="form-control form-control-sm file-input">
+                                </td>
+                                <td>
+                                    <span
+                                        class="badge {{ $status == 'Enviado' ? 'bg-success' : 'bg-secondary' }} status-badge">{{ $status }}</span>
+                                </td>
+                                <td>
+                                    @if ($arquivo)
+                                        <a href="{{ $link }}" target="_blank"
+                                            class="btn btn-sm btn-outline-secondary rounded-pill">
+                                            <i class="bi bi-file-earmark-arrow-down"></i> Baixar
+                                        </a>
+                                    @else
+                                        -
+                                    @endif
+
+                                    <button type="button"
+                                        class="btn btn-sm btn-outline-primary rounded-pill upload-btn"
+                                        data-doc="{{ $doc }}">
+                                        <i class="bi bi-upload"></i> {{ $botaoLabel }}
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+
+
     <!-- EMITIR CONTRATO -->
     <div class="card">
         <div class="card-header" id="headingContrato">
@@ -394,3 +473,69 @@
     </div>
 
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+
+        $('.upload-btn').click(function() {
+            var doc = $(this).data('doc');
+            var row = $('#row-' + doc);
+
+            // Seleciona input correto pelo name
+            var fileInput = $('input[name="documentos[' + doc + ']"]')[0];
+
+            if (!fileInput || !fileInput.files.length) {
+                alert('Selecione um arquivo para ' + doc);
+                return;
+            }
+
+            var file = fileInput.files[0];
+
+            var formData = new FormData();
+            formData.append('documento', file);
+            formData.append('nome_doc', doc);
+            formData.append('_token', '{{ csrf_token() }}');
+
+            $.ajax({
+                url: '{{ route('documentos.upload') }}',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    // Atualiza badge
+                    row.find('.status-badge')
+                        .removeClass('bg-secondary bg-danger')
+                        .addClass('bg-success')
+                        .text('Enviado');
+
+                    // Atualiza link
+                    var linkCell = row.find('td').eq(3);
+                    linkCell.html('<a href="/storage/documentos/' + response.arquivo +
+                        '" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill"><i class="bi bi-file-earmark-arrow-down"></i> Baixar</a>'
+                    );
+
+                    // Botão sempre visível com Atualizar
+                    row.find('.upload-btn').html('<i class="bi bi-upload"></i> Atualizar');
+
+                    // Limpa input
+                    fileInput.value = '';
+
+                    alert(response.message);
+                },
+                error: function(xhr) {
+                    row.find('.status-badge')
+                        .removeClass('bg-secondary bg-success')
+                        .addClass('bg-danger')
+                        .text('Erro');
+
+                    var msg = xhr.responseJSON?.message ?? 'Erro desconhecido';
+                    alert('Erro ao enviar o documento: ' + msg);
+                }
+            });
+
+        });
+
+    });
+</script>

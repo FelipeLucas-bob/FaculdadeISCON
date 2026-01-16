@@ -66,6 +66,12 @@ class HomeController extends Controller
 
         $passwordUpdate = $this->userService->selectUserPasswordUpadate()->count();
 
+        // Lista de documentos
+        $documentos = ['CPF', 'RG', 'Comprovante de Residência', 'Certidão de Nascimento'];
+
+        // Pega os documentos já enviados do usuário
+        $userDocs = Auth::user()->documents->keyBy('tipo');
+
         return view(
             'admin/home/home',
             [
@@ -90,7 +96,8 @@ class HomeController extends Controller
                 'booksItemsQtd' => $booksItemsQtd,
                 'teste' => 'teste',
                 'proofs' => $proofs,
-                'passwordUpdate'=> $passwordUpdate,
+                'passwordUpdate' => $passwordUpdate,
+                'documentos' => $documentos
             ]
         );
     }
