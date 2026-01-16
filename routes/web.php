@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -207,7 +208,19 @@ Route::middleware(['auth', 'check.access'])->group(function () {
     Route::prefix('painel')->group(function () {
         Route::get('/processo-seletivo', [App\Http\Controllers\Panel\RegistrationController::class, 'index'])->name('registrations.index');
         Route::post('/prova', [App\Http\Controllers\Panel\ProofController::class, 'proof'])->name('proof.proof');
-        Route::post('/resposta', [App\Http\Controllers\Panel\RegistrationController::class, 'answers'])->name('registrations.answers');
+        Route::post('/prova/iniciar', [App\Http\Controllers\Panel\ProofController::class, 'start'])->name('proof.start');
+        Route::post('/prova/continuar', [App\Http\Controllers\Panel\ProofController::class, 'continue'])->name('proof.continue');
+        Route::post('/resposta', [App\Http\Controllers\Panel\ProofController::class, 'answers'])->name('registrations.answers');
+        Route::get('/prova/{registration}', [App\Http\Controllers\Panel\ProofController::class, 'show'])->name('proof.show');
+        Route::get('/painel/processo-seletivo/{registration}/prova', [App\Http\Controllers\Panel\ProofController::class, 'show'])->name('registrations.proof');
+
+        Route::get('/processo-seletivo/{registration}/prova', [App\Http\Controllers\Panel\ProofController::class, 'show'])->name('registrations.proof');
+        Route::post('/prova/resposta', [App\Http\Controllers\Panel\ProofController::class, 'updateAnswer'])->name('registrations.answers');
+        Route::post('/painel/prova/{proof}/finalizar', [App\Http\Controllers\Panel\ProofController::class,'finish'])->name('proof.finish');
+
+
+
+
     });
 
     /**
@@ -329,8 +342,14 @@ Route::middleware(['auth', 'check.access'])->group(function () {
 
 
 
-Route::get('/user/search', [App\Http\Controllers\Panel\ServiceController::class, 'search'])->name('user.search');
-
-
-
+    Route::get('/user/search', [App\Http\Controllers\Panel\ServiceController::class, 'search'])->name('user.search');
 });
+
+// Route::get('/teste-email', function () {
+//     Mail::raw('Teste SMTP SendPulse funcionando 🚀', function ($message) {
+//         $message->to('angelamaiara15@gmail.com')
+//                 ->subject('Teste SMTP SendPulse');
+//     });
+
+//     return 'Email enviado!';
+// });

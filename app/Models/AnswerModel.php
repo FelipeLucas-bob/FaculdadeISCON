@@ -10,5 +10,11 @@ class AnswerModel extends Model
     use HasFactory;
 
     protected $table = 'answers';
+    
+        protected $fillable = [
+        'proof_id',
+        'question_id',
+        'answer'
+    ];
 
 }
